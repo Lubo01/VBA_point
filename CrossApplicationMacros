@@ -1,0 +1,103 @@
+Sub XOpenWorkBook()
+
+'Short version within Excel application
+'Workbooks.Open "E:\CGA Projects.xls"
+
+'Long version with Excel Application object
+On Error Resume Next
+Set app = GetObject(, "Excel.Application")
+
+'We've tried to get Excel but if it's nothing then it isn't open
+If app Is Nothing Then
+    Set app = CreateObject("Excel.Application")
+End If
+
+app.Visible = True
+'app.Activate
+app.Workbooks.Open "E:\CGA Projects.xls"
+
+'Workbooks.Close
+'app.Quit
+
+End Sub
+
+
+Sub XOpenWordDocument()
+
+'opens Word Document from Excel
+Dim app As Object
+
+'We need to continue through errors since if Word isn't
+'open the GetObject line will give an error
+On Error Resume Next
+Set app = GetObject(, "Word.Application")
+
+'We've tried to get Word but if it's nothing then it isn't open
+If app Is Nothing Then
+    Set app = CreateObject("Word.Application")
+End If
+
+'It's good practice to reset error warnings
+On Error GoTo 0
+
+app.Visible = True
+app.Activate
+
+'open word document
+'app.Documents.Open "\\filePath\file.docx"
+app.Documents.Open "E:\try tab.doc"
+
+'object will be closed
+'app.Quit
+
+Set app = Nothing
+
+End Sub
+
+
+Sub XOpenPres()
+
+Dim app As Object
+
+Set app = CreateObject("Powerpoint.Application")
+app.Visible = True
+app.Presentations.Open "E:\Presentation1.ppt"
+
+End Sub
+
+
+Sub XCopyTableToWord()
+
+Dim app As Object
+Dim wdoc As Object
+
+On Error Resume Next
+Set app = GetObject(, "Word.Application")
+
+'We've tried to get Word but if it's nothing then it isn't open
+If app Is Nothing Then
+    Set app = CreateObject("Word.Application")
+End If
+
+On Error GoTo 0
+
+Set wdoc = app.Documents.Add
+app.Visible = True
+
+'select range/table to copy
+Sheets("Sheet1").Select
+Range("C3:E14").Select
+Selection.Copy
+
+'Selection.PasteExcelTable Method(Word)-Pastes and formats an Excel table.
+'Syntax: expression.PasteExcelTable(LinkedToExcel, WordFormatting, RTF)
+'Boolean parameters:
+'- LinkedToExcel: True links the pasted table to the original Excel file i.e. changes are reflected in Word.
+'- WordFormatting: True formats the table using the formatting in the Word document.
+'                  False formats the table according to the original Excel file.
+'- RTF: True pastes the Excel table using Rich Text Format (RTF). False pastes the Excel table as HTML.
+app.Selection.PasteExcelTable False, False, False
+
+Application.CutCopyMode = False
+
+End Sub
