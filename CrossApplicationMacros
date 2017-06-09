@@ -1,3 +1,14 @@
+'Content
+'
+'XOpenWorkBook
+'XOpenWordDocument
+'XOpenPres
+'XCopyTableToWord
+'XSendMailWorkBook - to be added
+'XSendMail1Sheet - to be added
+
+
+
 Sub XOpenWorkBook()
 
 'Short version within Excel application
