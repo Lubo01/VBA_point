@@ -1,0 +1,369 @@
+Sub kolekcia()
+'objekt COLLECTION
+'pouziva sa na aj ziskanie jedinecnych hodnot
+Dim kol As New Collection
+Dim bunka As Range
+Dim pole()
+
+Set bunka = ActiveCell
+Do While Not IsEmpty(bunka.Value)
+    On Error Resume Next
+    kol.Add bunka.Value, bunka.Value
+    Set bunka = bunka.Offset(1, 0)
+Loop
+
+MsgBox kol.Count
+ 
+'naplnit pole jedinecnymi hodnotami
+
+ReDim pole(1 To kol.Count)
+For i = LBound(pole) To UBound(pole)
+    pole(i) = kol(i)
+Next
+
+'? nenasiel som vystup, da sa pole vypisat cez MsgBox?
+
+End Sub
+
+Sub BubleSort()
+'zoradenie pola pomocou medoty BubleSort
+pole = Array(1, 5, 8, 9, 7, 4, 5, 2, 3, 6)
+pocet = UBound(pole)
+
+For i = 0 To pocet
+    For j = i + 1 To pocet
+        If pole(i) > pole(j) Then 'plati pre cisla, usporiadanie od najmensieho
+        kosik = pole(i) 'odlozim a zamenim
+        pole(i) = pole(j)
+        pole(j) = kosik
+        End If
+    Next
+Next
+
+For i = 0 To pocet
+    Debug.Print pole(i)
+Next
+'vysledok je usporiadane pole 1,2,3,4,5,6,7,8,9
+
+End Sub
+
+'Funkcia, ktora na vstupe ma pole hodnot a na vystupe pole jedinecnych hodnot
+Function VratPoleJedinecnychHodnot(pole)
+Dim kol As New Collection
+
+For i = LBound(pole) To UBound(pole)
+    On Error Resume Next
+    kol.Add pole(i), CStr(pole(i))
+'?ako sa stratia duplicity, cez CStr?
+Next
+
+'na vystup pouzijeme rovnake pole
+ReDim pole(1 To kol.Count)
+poc = 1
+    For Each prvok In kol
+        pole(poc) = prvok
+        poc = poc + 1
+    Next
+    
+  VratPoleJedinecnychHodnot = pole
+End Function
+
+Sub skuskaFunkcie()
+pole = VratPoleJedinecnychHodnot(Array(1, 1, 2, 2, 2, 3))
+MsgBox UBound(pole) 'vysledok je 3
+End Sub
+
+'Funkcia, ktora ma na vstupe pole hodnot a na vystupe usporiadane pole hodnot
+Function VratUsporiadanePole(pole)
+pocet = UBound(pole)
+zaciatok = LBound(pole)
+
+For i = zaciatok To pocet
+    For j = i + 1 To pocet
+        If pole(i) > pole(j) Then
+        kosik = pole(i) 'odlozim a zamenim
+        pole(i) = pole(j)
+        pole(j) = kosik
+        End If
+    Next
+Next
+
+VratUsporiadanePole = pole
+End Function
+
+Sub skuskaFunkcie2()
+pole = VratUsporiadanePole(Array(3, 2, 4, 1, 5))
+MsgBox pole(0) 'vysledok je 1 tj. najmensi prvok
+
+
+End Sub
+
+'SORT s pouzitim Excelu
+Sub usporiadanie()
+pole = Array("xxx", "aaa", "ccc", "bbb", "zzz", "ddd") 'pole ktore sa bude usporiadavat
+Application.ScreenUpdating = False
+
+'vytvorime novy list a na neho vlozime pole
+Set NL = Worksheets.Add
+
+'pole dame na list, kedze do stlpa, tak musime transponovat
+num_riadky = UBound(pole) - LBound(pole) + 1
+NL.Cells(1, 1).Resize(num_riadky, 1).Value = Application.Transpose(pole)
+
+'zoradime
+NL.Cells(1, 1).CurrentRegion.Sort NL.Cells(1, 1), xlAscending
+
+'vysledok vratime naspat do pola
+pole = NL.Cells(1, 1).CurrentRegion
+
+'zmazeme list
+Application.DisplayAlerts = False
+NL.Delete
+Application.DisplayAlerts = True
+
+'skuska, uvedomime si ze pole bude dvojrozmerne
+For i = LBound(pole, 1) To UBound(pole, 1)
+    Debug.Print pole(i, 1)
+Next
+
+Application.ScreenUpdating = True
+End Sub
+
+
+'Polia
+'Viacrozmerne polia
+
+Sub deklaracia()
+Dim pole() 'dynamicke pole
+'pole(0) = 5 'nemozno urobit priradenie
+
+ReDim pole(2) 'staticke pole
+pole(0) = 5
+
+'ReDim pole(3) 'nezachovava hodnotu pola
+'MsgBox IsEmpty(pole(0))
+
+ReDim Preserve pole(3)
+MsgBox IsEmpty(pole(0))
+
+'polia su inicialen intexovane od 1, Option Base
+End Sub
+
+Sub hranice_pola()
+Dim pole(-2 To 5)
+
+MsgBox "dolna:" & LBound(pole) & " horna:" & UBound(pole)
+'cyklus cez cele pole
+
+End Sub
+
+Sub konstruktory()
+'Array
+poleTyzden = Array("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+poleCisla = Array(10, 20, 30, 40)
+
+MsgBox poleTyzden(6) & poleCisla(3)
+'Split
+poleCisla = Split("10,20,30,40,50", ",")
+
+End Sub
+
+'vrati pismenko stlpca ak pozname cislo stlpca
+Function ColumnLetter(ByVal cislo As Integer) As String
+pole = Split(Columns(cislo).Address(False, False), ":")
+
+ColumnLetter = pole(0)
+End Function
+
+Sub skuskaPismenka()
+MsgBox ColumnLetter(50)
+End Sub
+
+Sub Viacrozmerov()
+Dim pole(1 To 10, 1 To 5)
+pole(1, 1) = 20
+
+MsgBox "1.rozmer: " & UBound(pole, 1) & vbCrLf & "2.rozmer: " & UBound(pole, 2)
+End Sub
+
+
+'******************************
+'Range to Array
+
+Sub ExcelToPole()
+pole = Range("a1:c10")
+
+MsgBox pole(1, 3)
+' je to vzdy dvojrozmerne pole a vzdy to ma rozmer od 1 (nezalezi od Option Base)
+End Sub
+
+Sub PrechodCyklom()
+pole = Range("a1:c10")
+num_riadok = UBound(pole, 1) 'pocet riadkov
+num_stlpec = UBound(pole, 2) 'pocet stlpcov
+
+For i = 1 To num_riadok
+    For j = 1 To num_stlpec
+        Debug.Print ColumnLetter(j) & i & ":" & pole(i, j)
+    Next
+Next
+End Sub
+
+'Pouzitie nazvov
+Sub nazov()
+pole = Range("nieco")
+End Sub
+
+'Zistit ci taky nazov existuje
+Sub NajdiNazov()
+    Dim wb As Workbook
+    Dim meno As Name 'existuje kolekcia Names
+     
+    Set wb = ActiveWorkbook
+     
+    For Each meno In wb.Names
+        MsgBox meno.Name & ": Refer to :" & meno.RefersToRange.Address & " " & meno.Parent.Name
+    Next
+'existuje aj vlastnost RefersTo, nevracia range ale vzorec
+
+End Sub
+
+'Funkcia ktora zisti ci existuje dany nazov
+Function IsNamedRangeExists(nazov As String) As Boolean
+    Dim rngExists  As Range
+     
+    On Error Resume Next
+    Set rngExists = Range(nazov)
+    IsNamedRangeExists = True
+    If rngExists Is Nothing Then IsNamedRangeExists = False
+    
+End Function
+
+Sub SkuskaIsNamedRangeExists()
+    MsgBox IsNamedRangeExists("tralala")
+End Sub
+
+'Vypisat zoznam vsetkych nazvov do noveho listu
+Sub zoznam_mien()
+    Set NewSheet = Worksheets.Add
+    i = 1
+    For Each meno In ActiveWorkbook.Names
+        NewSheet.Cells(i, 1).Value = meno.Name
+        NewSheet.Cells(i, 2).Value = "'" & meno.RefersTo
+    i = i + 1
+    Next
+NewSheet.Columns("A:B").AutoFit
+End Sub
+
+'******************************
+'Array to Range
+
+'Vlastnost Resize
+Sub jednorozmerne_pole()
+Dim pole(1 To 10)
+    'nejake jednorozmerne pole
+    For i = 1 To 10
+        pole(i) = i
+    Next
+
+'vlozi na poziciu Activecell
+Set bunka = ActiveCell
+
+'vlozi riadok
+'Set oblast = bunka.Resize(1, UBound(pole))
+'oblast.Value = pole
+
+'vlozi stlpec, je potrebne transponovat
+Set oblast = bunka.Resize(UBound(pole), 1)
+oblast.Value = Application.Transpose(pole)
+
+End Sub
+
+Sub dvojrozmerne_pole()
+Dim pole(1 To 10, 1 To 10)
+    'nejake dvojrozmerne pole
+    For i = 1 To 10
+        For j = 1 To 10
+            pole(i, j) = i * j
+        Next
+    Next
+
+Set bunka = ActiveCell
+Set oblast = bunka.Resize(UBound(pole, 1), UBound(pole, 2))
+
+'je ho mozne tiez transponovat, dolezite su hranice
+oblast.Value = pole
+
+'ak je oblast vacsia zaplni sa N/A, ak je mensia tak je OK
+
+'vo vseobecnosti Resize(num_riadky, num_stlpce)
+'num_riadky=Ubound(pole,1)-Lbound(pole,1)+1
+'num_stlpce=Ubound(pole,1)-Lbound(pole,1)+1
+End Sub
+
+
+Sub PopulatingRangeEachCell()
+'This procedure populates the range one cell at time
+    'Application.ScreenUpdating = False
+    'Application.Calculation = xlCalculationManual
+    
+    Dim rng         As Range
+    Dim rngCell     As Range
+    Dim lngCnt      As Long
+    Dim stTime      As Date
+ 
+    stTime = Now
+ 
+    Set rng = Sheet2.Range("A1:A65000")
+    For Each rngCell In rng
+        lngCnt = lngCnt + 1
+        rngCell.Value = lngCnt
+    Next rngCell
+ 
+    Set rng = Nothing
+    Set rngCell = Nothing
+ 
+    MsgBox "Start Time: " & Format(stTime, "hh:mm:ss") & vbCrLf & _
+            "End Time: " & Format(Now, "hh:mm:ss") & vbCrLf & _
+            DateDiff("s", stTime, Now) & " seconds", vbInformation, "Time Taken"
+
+    'Application.ScreenUpdating = True
+    'Application.Calculation = xlCalculationAutomatic
+    
+End Sub
+ 
+Sub PopulatingRangeUsingArray()
+'This procedure assigns range to array
+'Then populates array and
+'then assign array back to range
+
+    Dim rng         As Range
+    Dim lngCnt      As Long
+    Dim stTime      As Date
+    Dim arr
+ 
+    stTime = Now
+ 
+    Set rng = Sheet2.Range("A1:A65000")
+    arr = rng
+    For lngCnt = LBound(arr, 1) To UBound(arr, 1)
+        arr(lngCnt, 1) = lngCnt
+    Next lngCnt
+ 
+    rng = arr
+ 
+    Erase arr
+    Set rng = Nothing
+ 
+    MsgBox "Start Time: " & Format(stTime, "hh:mm:ss") & vbCrLf & _
+            "End Time: " & Format(Now, "hh:mm:ss") & vbCrLf & _
+            DateDiff("s", stTime, Now) & " seconds", vbInformation, "Time Taken"
+End Sub
+
+Sub ShowFolderInfo(folderspec)
+    Dim fs, f, s
+    Set fs = CreateObject("Scripting.FileSystemObject")
+    Set f = fs.GetFolder(folderspec)
+    s = f.DateCreated
+    MsgBox s
+End Sub
