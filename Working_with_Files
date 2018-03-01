@@ -1,0 +1,70 @@
+Sub generate_text_file()
+hlavicka1 = Application.WorksheetFunction.Rept("- ", 25)
+hlavicka2 = "  ID  | AA | AB | AC | BB | BC | XX | WW |"
+stranka = 150
+predel = 25
+
+Dim bunka As Range
+Dim FSO As New FileSystemObject
+Dim txtSubor As TextStream
+
+Set bunka = Range("a1")
+adresar = GetFolder() & "\"
+
+poc = 0
+poc_stranok = 1
+Do While Not IsEmpty(bunka.Value)
+    If poc Mod stranka = 0 Then
+        If Not (txtSubor Is Nothing) Then txtSubor.Close
+        Set txtSubor = FSO.CreateTextFile(adresar & "txt" & poc_stranok, True)
+        poc_stranok = poc_stranok + 1
+    End If
+    If poc Mod predel = 0 Then
+        txtSubor.WriteLine hlavicka1
+        txtSubor.WriteLine hlavicka2
+        txtSubor.WriteLine hlavicka1
+    End If
+    txtSubor.WriteLine bunka.Value & bunka.Offset(0, 1).Value
+    Set bunka = bunka.Offset(1, 0)
+    poc = poc + 1
+Loop
+
+End Sub
+
+Sub open_text_file()
+Dim FSO As New FileSystemObject
+Dim txtSubor As TextStream
+
+cesta = Application.GetOpenFilename
+Set txtSubor = FSO.OpenTextFile(cesta, ForReading)
+
+Worksheets.Add
+Set bunka = ActiveCell
+
+Do While Not txtSubor.AtEndOfStream
+    riadok = txtSubor.ReadLine
+    bunka.Value = riadok
+    Set bunka = bunka.Offset(1, 0)
+Loop
+
+txtSubor.Close
+Set txtSubor = Nothing
+End Sub
+
+Function GetFolder(Optional adresar) As String
+Dim F_okno As FileDialog
+
+If IsMissing(adresar) Then adresar = "K:\"
+Set F_okno = Application.FileDialog(msoFileDialogFolderPicker)
+
+    F_okno.Title = "Select a Folder"
+    F_okno.AllowMultiSelect = False
+    If F_okno.Show <> -1 Then GoTo NextCode
+    adresar = F_okno.SelectedItems(1)
+
+NextCode:
+GetFolder = adresar
+Set F_okno = Nothing
+End Function
+
+
