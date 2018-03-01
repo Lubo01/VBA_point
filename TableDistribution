@@ -1,0 +1,48 @@
+Sub rozdel_do_stolov()
+Dim tabulka As Range
+Dim bunka As Range
+Dim kolekcia As New Collection
+Dim pole
+
+Set tabulka = Worksheets("Zoznam_uzivatelov").Range("a1").CurrentRegion
+If tabulka.Rows.Count = 1 Then Exit Sub
+Set tabulka = Range(tabulka.Cells(2, 1), tabulka.Cells(tabulka.Cells.Count)) 'bez prveho riadku
+
+On Error GoTo handler
+Set bunka = Application.InputBox("Vyber stôl od ktorého mám rozdelova!!!", , , , , , , 8)
+
+'vytvorim jedinecne pole hodnot
+On Error Resume Next
+For Each prvok In tabulka.Columns(2).Cells
+        kolekcia.Add prvok.Value, CStr(prvok.Value)
+Next
+pocet = kolekcia.Count
+ReDim pole(1 To pocet)
+For i = 1 To pocet
+    pole(i) = kolekcia.Item(i)
+Next
+
+Do While Not IsEmpty(bunka.Value)
+    kapacita = bunka.Offset(0, 1).Value
+    naplnene = 0
+        For j = LBound(pole) To UBound(pole)
+            For Each prvok In tabulka.Columns(1).Cells
+                If prvok.Offset(0, 1).Value = pole(j) Then
+                    If IsEmpty(prvok.Offset(0, 2).Value) Then
+                        prvok.Offset(0, 2).Value = bunka.Value
+                        naplnene = naplnene + 1
+                        Exit For
+                    End If
+                End If
+            Next
+            If naplnene = kapacita Then Exit For
+        Next
+    bunka.Offset(0, 2).Value = naplnene
+    Set bunka = bunka.Offset(1, 0)
+Loop
+
+MsgBox "Rozdelene"
+Exit Sub
+handler:
+    MsgBox "Treba nieco vybra :-)"
+End Sub
