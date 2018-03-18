@@ -1,3 +1,444 @@
 #VBA Basic code examples
 
 XBase - for Excel
+
+'Content
+
+'A1a_SaveCopyAsBackUp_BezMakier
+'A1b_SaveCopyAsBackUp_SMakrami
+'A2_UnprotectSheetAndCells
+'A3_VytvorenieSuborov_a_Listov
+'A4_ZiskanieInfoCezInputBox
+'A5_OtvorenieSuboruPoZadaniCesty
+'A6_Vyber_a_AktivaciaHarka_a_Bunky_GoToInput
+'A7_Rozdel_CSV (pre CRIS tlac)
+
+'B1_Praca_s_FileSystemObject_DriveCountAndCreateFolder
+'B2_FSO_ZadanieParametrovDoBuniekCezInputBox
+'B3_CreateFolder_And_CopyFiles
+'B4_CopyContentOfFiles_IfConditionIsTrue
+'B5a_ZistiCestuAdresara_a_Vypis_subor
+'B5b_VypisCestuAdresara
+'B5c_VypiseCestuAdresara
+'B6_SplitCellValue_rozsekaj
+'B7_daj_obsah_na_koniec
+
+
+Sub A1a_SaveCopyAsBackUp_BezMakier()
+
+ActiveWorkbook.SaveCopyAs "L:\Docs\9 Back up\" & Left(ActiveWorkbook.Name, Len(ActiveWorkbook.Name) - 5) & " backup.xlsx"
+                                                                          
+MsgBox "Copy Saved as: " & Left(ActiveWorkbook.Name, _
+                           Len(ActiveWorkbook.Name) - 5) & " backup.xlsx" _
+                           & " in L:\Docs\9 Back up\"
+End Sub
+
+
+Sub A1b_SaveCopyAsBackUp_SMakrami()
+
+ActiveWorkbook.SaveCopyAs "L:\Docs\9 Back up\" & Left(ActiveWorkbook.Name, Len(ActiveWorkbook.Name) - 5) & " backup.xlsm"
+                                                                          
+MsgBox "Copy Saved as: " & Left(ActiveWorkbook.Name, _
+                                     Len(ActiveWorkbook.Name) - 5) & " backup.xlsm" _
+                                     & " in L:\Docs\9 Back up\"
+End Sub
+
+Public Sub A2_UnprotectSheetAndCells()
+
+ActiveSheet.Unprotect
+Cells.Select
+Selection.Locked = False
+'Selection.FormulaHidden = False
+
+End Sub
+
+
+Sub A3_VytvorenieSuborov_a_Listov()
+'vyrobit 26 suborov A-Z
+'na kazdom 50 listov
+'na kazdom liste v bunke A1 bude text "tady sem byl"
+Dim bunka As Range
+Dim newWB As Workbook
+
+Application.DisplayAlerts = False
+
+For i = 65 To 90
+'cislo 65 priradi z kodu ASCII pismeno A
+
+    Set newWB = Workbooks.Add
+    newWB.SaveAs "D:\Test\" & Chr(i) & ".xlsx"
+    'znak & spaja casti textu, teda priradi cestu k suboru a nazov suboru s priponou
+    
+        For j = 1 To 50
+        'alternativa j=50 To 1 Step -1
+        'ak nie je Step tak inkrementacia je vzdy +1
+        
+             newWB.Worksheets.Add
+            ActiveSheet.Name = j
+        Next
+        
+        For Each prvok In newWB.Worksheets
+            If IsNumeric(prvok.Name) Then
+                prvok.Cells(1, 1).Value = "tady sem byl"
+                Else
+                    prvok.Delete
+                End If
+            Next
+            
+    newWB.Save
+    newWB.Close
+Next
+
+Application.DisplayAlerts = True
+MsgBox "Hotovo, uz to mam!"
+
+End Sub
+
+
+Sub A4_ZiskanieInfoCezInputBox()
+' Declares a procedure named GetInfo
+' This Sub procedure takes no arguments
+' Declares a string variable named answer
+
+Dim answer As String
+' Assigns the return value of the InputBox function to answer
+
+answer = InputBox(Prompt:="What is your name?")
+    ' Conditional If...Then...Else statement
+    If answer = Empty Then
+        ' Calls the MsgBox function
+        MsgBox Prompt:="You did not enter a name."
+    Else
+        ' MsgBox function concatenated with the variable answer
+        MsgBox Prompt:="Your name is " & answer
+    ' Ends the If...Then...Else statement
+    End If
+' Ends the Sub procedure
+
+End Sub
+
+
+Sub A5_OtvorenieSuboruPoZadaniCesty()
+
+Dim subor As Workbook
+
+cesta = Application.GetOpenFilename
+MsgBox cesta
+'cesta = InputBox("zadaj cestu")
+Set subor = Workbooks.Open(cesta)
+'Set subor = Workbooks.Open ("D:\Test\A.xlsx")
+subor.Worksheets("Obsah").Cells(1, 1).Value = Date
+subor.Save
+subor.Close
+
+End Sub
+
+
+Sub A6_Vyber_a_AktivaciaHarka_a_Bunky_GoToInput()
+'vyberie zadany harok a aktivuje tento harok, vyberie bunku
+
+Dim country As String
+country = Sheet4.Range("country")
+Sheets(country).Activate
+ActiveSheet.Range("A1").Select
+
+End Sub
+
+
+Sub A7_Rozdel_CSV()
+
+Dim VstupZaciatok As Long
+Dim VstupKoniec As Long
+Dim SuvahaZaciatok As Long
+Dim SuvahaKoniec As Long
+Dim CFZaciatok As Long
+Dim CFKoniec As Long
+Dim UkazovateleZaciatok As Long
+Dim UkazovateleKoniec As Long
+Dim KovenantyZaciatok As Long
+Dim KovenantyKoniec As Long
+Dim RatingIZaciatok As Long
+Dim RatingIKoniec As Long
+Dim RatingIIZaciatok As Long
+Dim RatingIIKoniec As Long
+
+ActiveWorkbook.Sheets("csv udaje").Activate
+Range("A1").Activate
+
+VstupZaciatok = 1
+Cells.Find(What:="FA_End", After:=ActiveCell).Activate
+VstupKoniec = ActiveCell.Row
+Cells.Find(What:="FA_Start", After:=ActiveCell).Activate
+SuvahaZaciatok = ActiveCell.Row
+Cells.Find(What:="FA_End", After:=ActiveCell).Activate
+SuvahaKoniec = ActiveCell.Row
+Cells.Find(What:="FA_Start", After:=ActiveCell).Activate
+CFZaciatok = ActiveCell.Row
+Cells.Find(What:="FA_End", After:=ActiveCell).Activate
+CFKoniec = ActiveCell.Row
+Cells.Find(What:="FA_Start", After:=ActiveCell).Activate
+UkazovateleZaciatok = ActiveCell.Row
+Cells.Find(What:="FA_End", After:=ActiveCell).Activate
+UkazovateleKoniec = ActiveCell.Row
+Cells.Find(What:="FA_Start", After:=ActiveCell).Activate
+KovenantyZaciatok = ActiveCell.Row
+Cells.Find(What:="FA_End", After:=ActiveCell).Activate
+KovenantyKoniec = ActiveCell.Row
+Cells.Find(What:="FA_Start", After:=ActiveCell).Activate
+RatingIZaciatok = ActiveCell.Row
+Cells.Find(What:="FA_End", After:=ActiveCell).Activate
+RatingIKoniec = ActiveCell.Row
+Cells.Find(What:="FA_Start", After:=ActiveCell).Activate
+RatingIIZaciatok = ActiveCell.Row
+Cells.Find(What:="FA_End", After:=ActiveCell).Activate
+RatingIIKoniec = ActiveCell.Row
+
+'MsgBox "Vstup zacina od riadku " & VstupZaciatok & " a konci riadkom " & VstupKoniec & vbNewLine _
+        & "Suvaha zacina od riadku " & SuvahaZaciatok & " a konci riadkom " & SuvahaKoniec & vbNewLine _
+        & "CF zacina od riadku " & CFZaciatok & " a konci riadkom " & CFKoniec & vbNewLine _
+        & "Ukazovatele zacina od riadku " & UkazovateleZaciatok & " a konci riadkom " & UkazovateleKoniec & vbNewLine _
+        & "Kovenanty zacina od riadku " & KovenantyZaciatok & " a konci riadkom " & KovenantyKoniec & vbNewLine _
+        & "RatingI zacina od riadku " & RatingIZaciatok & " a konci riadkom " & RatingIKoniec & vbNewLine _
+        & "RatingII zacina od riadku " & RatingIIZaciatok & " a konci riadkom " & RatingIIKoniec & vbNewLine _
+
+For i = VstupZaciatok + 1 To VstupKoniec - 1
+       For j = 1 To 7
+       Sheets("Vstupné výkazy").Cells(i - 1, j) = Sheets("csv udaje").Cells(i, j)
+       Next
+Next
+
+'MsgBox "Active Cell " & ActiveCell.Address & vbNewLine _
+        & "SuvahaZaciatok ma hodnotu " & SuvahaZaciatok & vbNewLine _
+        & "SuvahaKoniec ma hodnotu " & SuvahaKoniec
+
+For i = SuvahaZaciatok + 1 To SuvahaKoniec - 1
+       For j = 1 To 7
+       Sheets("FA_Súvaha a VZaS").Cells(i - SuvahaZaciatok, j) = Sheets("csv udaje").Cells(i, j)
+       Next
+Next
+
+For i = CFZaciatok + 1 To CFKoniec - 1
+       For j = 1 To 7
+       Sheets("FA_Cash Flow").Cells(i - CFZaciatok, j) = Sheets("csv udaje").Cells(i, j)
+       Next
+Next
+
+For i = UkazovateleZaciatok + 1 To UkazovateleKoniec - 1
+       For j = 1 To 7
+       Sheets("FA_Ukazovatele").Cells(i - UkazovateleZaciatok, j) = Sheets("csv udaje").Cells(i, j)
+       Next
+Next
+
+For i = KovenantyZaciatok + 1 To KovenantyKoniec - 1
+       For j = 1 To 7
+       Sheets("Kovenanty").Cells(i - KovenantyZaciatok, j) = Sheets("csv udaje").Cells(i, j)
+       Next
+Next
+
+For i = RatingIZaciatok + 1 To RatingIKoniec - 1
+       For j = 1 To 7
+       Sheets("Rating I").Cells(i - RatingIZaciatok, j) = Sheets("csv udaje").Cells(i, j)
+       Next
+Next
+
+For i = RatingIIZaciatok + 1 To RatingIIKoniec - 1
+       For j = 1 To 7
+       Sheets("Rating II").Cells(i - RatingIIZaciatok, j) = Sheets("csv udaje").Cells(i, j)
+       Next
+Next
+    
+End Sub
+
+
+Sub B1_Praca_s_FileSystemObject_DriveCountAndCreateFolder()
+'praca s FSO
+'zistenie volneho miesta na disku a vytvorenie noveho adresara
+
+Dim FSO As New FileSystemObject
+
+MsgBox FSO.Drives.Count
+MsgBox FSO.Drives("C:\").FreeSpace & "-" & FSO.Drives("C:\").DriveLetter
+
+Dim adresar As Folder
+
+Set adresar = FSO.CreateFolder("D:\pokus")
+MsgBox adresar.DateCreated
+
+End Sub
+
+Sub B2_FSO_ZadanieParametrovDoBuniekCezInputBox()
+'prebehnut vsetky subory v adresari a zadat parametre pre vybrane bunky v kazdom subore
+
+Dim FSO As New FileSystemObject
+cesta = "D:\Test"
+Dim adresar As Folder
+Dim subor As File
+
+'Set bunka = ActiveCell
+Set bunka = Application.InputBox("vyber bunku", , , , , , , 8)
+'input box ma parametre, preto viac ciarok, posledny parameter type dame 8. typ - dialogbox s potvrdzovacim ok
+'Set adresar = FSO.GetFolder(cesta)
+Set adresar = FSO.GetFolder(cesta)
+
+For Each subor In adresar.Files
+    bunka.Value = subor.Path
+    bunka.Offset(0, 1).Value = subor.DateCreated
+    bunka.Offset(0, 2).Value = subor.Name
+    bunka.Offset(0, 3).Value = subor.Attributes()
+    bunka.Offset(0, 4).Value = subor.Size
+
+    Set bunka = bunka.Offset(1, 0)
+    'MsgBox subor.Path
+
+'Next
+ 
+End Sub
+
+
+Sub B3_CreateFolder_And_CopyFiles()
+'vytvori novy adresar a skopiruje do neho urcene subory
+
+Dim FSO As New FileSystemObject
+cesta = "D:\Test"
+cesta2 = "D:\Test2"
+
+If FSO.FolderExists(cesta2) Then
+    MsgBox "existuje adresar: " & cesta2
+    Set novyadresar = FSO.GetFolder(cesta2)
+    Exit Sub
+Else
+    Set novyadresar = FSO.CreateFolder(cesta2)
+    
+End If
+
+poc = 1
+Set oldadresar = FSO.GetFolder(cesta)
+
+For Each subor In oldadresar.Files
+    If poc Mod 2 = 0 Then
+    'Mod vrati zvysok delenia cisla, teda po deleni dvoma je zvysok 0 alebo 1
+    'Mod sa pouziva na urcenie kazdeho druheho alebo tretieho suboru, polozky atd.
+    
+        FSO.CopyFile subor.Path, novyadresar.Path & "\", True
+               
+    End If
+    poc = poc + 1
+Next
+
+End Sub
+
+
+Sub B4_CopyContentOfFiles_IfConditionIsTrue()
+'spracuje subory, ktore maju v stlpci F x
+'vsetko da (obsah skopiruje) na novy list pod seba
+
+Dim FSO As New FileSystemObject
+Dim bunka As Range
+Set bunka = ActiveCell
+
+Set KAM = Worksheets.Add
+'vytvori novy list
+urob = True
+
+Do While bunka.Value <> ""
+'prazdna bunka <>""
+cesta = bunka.Value
+pocR = KAM.UsedRange.Rows.Count
+If pocR = 1 And urob Then
+    pocR = 0
+    urob = False 'urobi to iba jeden krat
+End If
+'ak je za Then len jeden prikaz ide o skratenu formu t.j. nemusi byt End if
+
+    If FSO.FileExists(cesta) And bunka.Offset(0, 4).Value = "x" Then
+    'offset posuva o bunku dalej podla definicie v zatvorke
+        Set subor = FSO.GetFile(cesta)
+        Set openWB = Workbooks.Open(subor.Path)
+        MsgBox pocR
+        openWB.Worksheets("1").UsedRange.Copy KAM.Cells(pocR + 1, 1)
+        openWB.Close
+        End If
+        
+        Set bunka = bunka.Offset(1, 0)
+        'musi posuvat bunku o 1, inak mrzne pretoze pocita stale s tou istou bunkou
+Loop
+
+End Sub
+
+'nove cvicenie
+
+Dim bunka As Range
+'globalna premenna, zadefinovat bezne uplne hore
+
+
+Sub B5a_ZistiCestuAdresara_a_Vypis_subor(cesta As String)
+'cesta k adresaru
+
+Dim FSO As New FileSystemObject
+Dim adresar As Folder
+
+Set adresar = FSO.GetFolder(cesta)
+
+For Each subor In adresar.Files
+    bunka.Value = subor.Path
+    Set bunka = bunka.Offset(1, 0)
+Next
+
+End Sub
+
+Sub B5b_VypisCestuAdresara(ByVal cesta As String)
+'byVal sposob odovzdania parametru cez hodnotu, teda neodvolava sa v dalsej procedure naspat
+
+Dim FSO As New FileSystemObject
+Dim adresar As Folder
+Set adresar = FSO.GetFolder(cesta)
+
+For Each priecinok In adresar.SubFolders
+
+    bunka.Value = priecinok.Path
+    bunka.Interior.ColorIndex = 6
+    Set bunka = bunka.Offset(1, 0)
+    vypis_adresar priecinok.Path
+    'procedura (Sub) vola sama seba - je vnorena
+Next
+    'vypis_subor adresar.Path
+    B5a_ZistiCestuAdresara_a_Vypis_subor adresar.Path
+    
+End Sub
+
+Sub B5c_VypiseCestuAdresara()
+
+cesta = "d:\test\"
+
+Set bunka = ActiveCell
+'vypis_adresar cesta
+B5b_VypisCestuAdresara cesta
+
+End Sub
+
+Sub B6_SplitCellValue_rozsekaj()
+Set bunka = ActiveCell
+Do While bunka.Value <> ""
+    pole = Split(bunka.Value, "\")
+    'split rozdeluje textovy retazec podla parametra
+    'mozeme zadat parameter namiesto lomitka ako InputBox a zadavat parameter delenia podla zadania v dialogovm okne
+    
+    For i = LBound(pole) To UBound(pole)
+    'lbound=spodna hranica, Ubound =horna hranica pola
+        bunka.Offset(0, i + 1).Value = pole(i)
+        bunka.Offset(0, i + 1).Interior.ColorIndex = bunka.Interior.ColorIndex
+               
+    Next
+    Set bunka = bunka.Offset(1, 0)
+    
+Loop
+End Sub
+
+Sub B7_daj_obsah_na_koniec()
+
+Dim tabulka As Range
+'netreba makro da sa to urobit vzorcom cez referencie (index, indirect adres....)
+
+End Sub
+
+
