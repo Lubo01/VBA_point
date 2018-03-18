@@ -1,12 +1,12 @@
 
-Sub CrisInterfaceDraft2a()
+Sub CrsInterfaceDraft2a()
 
 Application.ScreenUpdating = False
 Application.Calculation = xlCalculationManual
 
 On Error Resume Next
 
-Application.ActiveWorkbook.Sheets("FA_Súvaha a VZaS").Select
+Application.ActiveWorkbook.Sheets("FA_SÃºvaha a VZaS").Select
 
 Dim period As Integer       'porovnavacie obdobie (2 az 4)
 Dim periodFactor As Integer 'posun stlpcov pre porovnanie
@@ -24,78 +24,78 @@ months = 0
 'kontrola poctu obdobi v Cris vystupe
 'Suvaha
 If Cells(14, 9) <> 0 Then
-periodNumber = 4
+    periodNumber = 4
 ElseIf Cells(14, 7) <> 0 Then
-periodNumber = 3
+    periodNumber = 3
 ElseIf Cells(14, 5) <> 0 Then
-periodNumber = 2
+    periodNumber = 2
 ElseIf Cells(14, 3) <> 0 Then
-periodNumber = 1
+    periodNumber = 1
 Else
-periodNumber = 0
+    periodNumber = 0
 End If
 'P&L
 If Cells(103, 9) <> 0 Then
-periodNumberPL = 4
+    periodNumberPL = 4
 ElseIf Cells(103, 7) <> 0 Then
-periodNumberPL = 3
+    periodNumberPL = 3
 ElseIf Cells(103, 5) <> 0 Then
-periodNumberPL = 2
+    periodNumberPL = 2
 ElseIf Cells(103, 3) <> 0 Then
-periodNumberPL = 1
+    periodNumberPL = 1
 Else
-periodNumberPL = 0
+    periodNumberPL = 0
 End If
 
 'generovanie hlavicky porovnania (riadky 1-11 + riadok 100, stlpce L-Y)
 For period = 2 To periodNumber
     If periodNumber < 2 Then
-    Exit For
+        Exit For
     End If
         
     If period = 2 Then
-    periodColumns = "e/c"
+        periodColumns = "e/c"
     ElseIf period = 3 Then
-    periodColumns = "g/e"
+        periodColumns = "g/e"
     ElseIf period = 4 Then
-    periodColumns = "i/g"
+        periodColumns = "i/g"
     Else
-    periodColumns = "N/A"
+        periodColumns = "N/A"
     End If
 
-Cells(1, period + 10 + periodFactor * (period - 2)) = "Period"  'starts with Cells(1, 12)
-Cells(1, period + 11 + periodFactor * (period - 2)) = period    'Cells(1, 13)
-Cells(1, period + 12 + periodFactor * (period - 2)) = periodColumns     'Cells(1, 14)
-'Cells(1, 15)= Cells(3,5)   '=(E3) vykaz k datumu
-Cells(1, period + 13 + periodFactor * (period - 2)) = Cells(3, period + 3 + (periodFactor - 3) * (period - 2))
-Cells(1, period + 13 + periodFactor * (period - 2)).NumberFormat = "d/m/yyyy"   'Cells(1, 15).NumberFormat
-'Cells(2, 13)= Cells(4,5)   '=(E4) pocet mesiacov
-Cells(2, period + 10 + periodFactor * (period - 2)) = "Months"  'Cells(2, 12)
-Cells(2, period + 11 + periodFactor * (period - 2)) = Cells(4, period + 3 + (periodFactor - 3) * (period - 2))    'Cells(2, 13)
- 
-Cells(3, period + 10 + periodFactor * (period - 2)) = "BS 5% rel"     'Cells(3, 12), BS relevance
-'Cells(3, 13)=0.05 * Cells(12, 5)   '=E12 celkove aktiva
-Cells(3, period + 11 + periodFactor * (period - 2)) = 0.05 * Cells(14, period + 3 + (periodFactor - 3) * (period - 2))   'Cells(3, 13)
-Cells(3, period + 12 + periodFactor * (period - 2)) = "P&L 5% rel"    'Cells(3, 14), P&L relevance
-'Cells(3, 15)=0.05 * Cells(101, 5)   '=E101 celkove trzby
-Cells(3, period + 13 + periodFactor * (period - 2)) = 0.05 * Cells(103, period + 3 + (periodFactor - 3) * (period - 2))  'Cells(3, 15)
+    Cells(1, period + 10 + periodFactor * (period - 2)) = "Period"  'starts with Cells(1, 12)
+    Cells(1, period + 11 + periodFactor * (period - 2)) = period    'Cells(1, 13)
+    Cells(1, period + 12 + periodFactor * (period - 2)) = periodColumns     'Cells(1, 14)
+    'Cells(1, 15)= Cells(3,5)   '=(E3) vykaz k datumu
+    Cells(1, period + 13 + periodFactor * (period - 2)) = Cells(3, period + 3 + (periodFactor - 3) * (period - 2))
+    Cells(1, period + 13 + periodFactor * (period - 2)).NumberFormat = "d/m/yyyy"   'Cells(1, 15).NumberFormat
+    'Cells(2, 13)= Cells(4,5)   '=(E4) pocet mesiacov
+    Cells(2, period + 10 + periodFactor * (period - 2)) = "Months"  'Cells(2, 12)
+    Cells(2, period + 11 + periodFactor * (period - 2)) = Cells(4, period + 3 + (periodFactor - 3) * (period - 2))    'Cells(2, 13)
 
-Cells(4, period + 10 + periodFactor * (period - 2)) = "BS 2% rel"     'Cells(4, 12), BS relevance
-'Cells(4, 13)=0.02 * Cells(12, 5)   '=E12 celkove aktiva
-Cells(4, period + 11 + periodFactor * (period - 2)) = 0.02 * Cells(14, period + 3 + (periodFactor - 3) * (period - 2))   'Cells(4, 13)
-Cells(4, period + 12 + periodFactor * (period - 2)) = "Profit 50% rel"    'Cells(4, 14), Profit relevance
-'Cells(4, 15)=0.5 * Cells(144, 5)   '=E144 cisty zisk/strata
-Cells(4, period + 13 + periodFactor * (period - 2)) = 0.5 * Cells(146, period + 3 + (periodFactor - 3) * (period - 2))   'Cells(4, 15)
+    Cells(3, period + 10 + periodFactor * (period - 2)) = "BS 5% rel"     'Cells(3, 12), BS relevance
+    'Cells(3, 13)=0.05 * Cells(12, 5)   '=E12 celkove aktiva
+    Cells(3, period + 11 + periodFactor * (period - 2)) = 0.05 * Cells(14, period + 3 + (periodFactor - 3) * (period - 2))   'Cells(3, 13)
+    Cells(3, period + 12 + periodFactor * (period - 2)) = "P&L 5% rel"    'Cells(3, 14), P&L relevance
+    'Cells(3, 15)=0.05 * Cells(101, 5)   '=E101 celkove trzby
+    Cells(3, period + 13 + periodFactor * (period - 2)) = 0.05 * Cells(103, period + 3 + (periodFactor - 3) * (period - 2))  'Cells(3, 15)
 
-Cells(13, period + 10 + periodFactor * (period - 2)) = "y/y"    'Cells(13, 12)
-Cells(13, period + 11 + periodFactor * (period - 2)) = "share"  'Cells(13, 13)
-Cells(13, period + 12 + periodFactor * (period - 2)) = "delta"  'Cells(13, 14)
-Cells(13, period + 13 + periodFactor * (period - 2)) = "delta pp"   'Cells(13, 15)
+    Cells(4, period + 10 + periodFactor * (period - 2)) = "BS 2% rel"     'Cells(4, 12), BS relevance
+    'Cells(4, 13)=0.02 * Cells(12, 5)   '=E12 celkove aktiva
+    Cells(4, period + 11 + periodFactor * (period - 2)) = 0.02 * Cells(14, period + 3 + (periodFactor - 3) * (period - 2))   'Cells(4, 13)
+    Cells(4, period + 12 + periodFactor * (period - 2)) = "Profit 50% rel"    'Cells(4, 14), Profit relevance
+    'Cells(4, 15)=0.5 * Cells(144, 5)   '=E144 cisty zisk/strata
+    Cells(4, period + 13 + periodFactor * (period - 2)) = 0.5 * Cells(146, period + 3 + (periodFactor - 3) * (period - 2))   'Cells(4, 15)
 
-Cells(102, period + 10 + periodFactor * (period - 2)) = "y/y"    'Cells(102, 12)
-Cells(102, period + 11 + periodFactor * (period - 2)) = "share"  'Cells(102, 13)
-Cells(102, period + 12 + periodFactor * (period - 2)) = "delta"  'Cells(102, 14)
-Cells(102, period + 13 + periodFactor * (period - 2)) = "delta pp"   'Cells(102, 15)
+    Cells(13, period + 10 + periodFactor * (period - 2)) = "y/y"    'Cells(13, 12)
+    Cells(13, period + 11 + periodFactor * (period - 2)) = "share"  'Cells(13, 13)
+    Cells(13, period + 12 + periodFactor * (period - 2)) = "delta"  'Cells(13, 14)
+    Cells(13, period + 13 + periodFactor * (period - 2)) = "delta pp"   'Cells(13, 15)
+
+    Cells(102, period + 10 + periodFactor * (period - 2)) = "y/y"    'Cells(102, 12)
+    Cells(102, period + 11 + periodFactor * (period - 2)) = "share"  'Cells(102, 13)
+    Cells(102, period + 12 + periodFactor * (period - 2)) = "delta"  'Cells(102, 14)
+    Cells(102, period + 13 + periodFactor * (period - 2)) = "delta pp"   'Cells(102, 15)
 
 Next
 
@@ -103,103 +103,103 @@ Next
 
 For i = 14 To 100
     If periodNumber < 2 Then
-    Exit For
+        Exit For
     End If
     
     For period = 2 To periodNumber
     
-    'y/y comparison, in column L: Cells(i, 12) = Cells(i, 5) / Cells(i, 3) - 1
-    If Cells(i, period + 1 + (periodFactor - 3) * (period - 2)).Value = 0 Then      'Cells (14,3)
-       Cells(i, period + 10 + periodFactor * (period - 2)) = "N/A"  'Cells (14,12)
-    'Cells(14, 12) = Cells(14, 5) / Cells(14, 3) - 1
-    Else
-    Cells(i, period + 10 + periodFactor * (period - 2)) = _
-        Cells(i, period + 3 + (periodFactor - 3) * (period - 2)) / Cells(i, period + 1 + (periodFactor - 3) * (period - 2)) - 1
-    End If
-        
-    Cells(i, period + 10 + periodFactor * (period - 2)).NumberFormat = "0.0%"   'Cells(14, 12)
-    
-    'share comparison in column M: Cells(i, 13) = Cells(i, 5) / Cells(14, 5)
-    'set 2nd e14 to $ (alias fix) through fixed row index
-    Cells(i, period + 11 + periodFactor * (period - 2)) = _
-    Cells(i, period + 3 + (periodFactor - 3) * (period - 2)) / Cells(14, period + 3 + (periodFactor - 3) * (period - 2))
-    Cells(i, period + 11 + periodFactor * (period - 2)).NumberFormat = "0.0%"
-    
-    'delta comparison in column N: Cells(i, 14) = Cells(i, 5) - Cells(i, 3)
-    Cells(i, period + 12 + periodFactor * (period - 2)) = _
-    Cells(i, period + 3 + (periodFactor - 3) * (period - 2)) - Cells(i, period + 1 + (periodFactor - 3) * (period - 2))
-    Cells(i, period + 12 + periodFactor * (period - 2)).NumberFormat = "#,##0"
-    
-    'delta pp comparison in column O: Cells(i, 15) = Cells(i, 13) - Cells(i, 3) / Cells(14, 3)
-    Cells(i, period + 13 + periodFactor * (period - 2)) = _
-    Cells(i, period + 11 + periodFactor * (period - 2)) - Cells(i, period + 1 + (periodFactor - 3) * (period - 2)) _
-    / Cells(14, period + 1 + (periodFactor - 3) * (period - 2)) 'set 2nd c14 to $ (alias fix) through fixed row index
-    Cells(i, period + 13 + periodFactor * (period - 2)).NumberFormat = "0.0%"
-    
+        'y/y comparison, in column L: Cells(i, 12) = Cells(i, 5) / Cells(i, 3) - 1
+        If Cells(i, period + 1 + (periodFactor - 3) * (period - 2)).Value = 0 Then      'Cells (14,3)
+              Cells(i, period + 10 + periodFactor * (period - 2)) = "N/A"  'Cells (14,12)
+              'Cells(14, 12) = Cells(14, 5) / Cells(14, 3) - 1
+        Else
+              Cells(i, period + 10 + periodFactor * (period - 2)) = _
+              Cells(i, period + 3 + (periodFactor - 3) * (period - 2)) / Cells(i, period + 1 + (periodFactor - 3) * (period - 2)) - 1
+        End If
+
+        Cells(i, period + 10 + periodFactor * (period - 2)).NumberFormat = "0.0%"   'Cells(14, 12)
+
+        'share comparison in column M: Cells(i, 13) = Cells(i, 5) / Cells(14, 5)
+        'set 2nd e14 to $ (alias fix) through fixed row index
+        Cells(i, period + 11 + periodFactor * (period - 2)) = _
+        Cells(i, period + 3 + (periodFactor - 3) * (period - 2)) / Cells(14, period + 3 + (periodFactor - 3) * (period - 2))
+        Cells(i, period + 11 + periodFactor * (period - 2)).NumberFormat = "0.0%"
+
+        'delta comparison in column N: Cells(i, 14) = Cells(i, 5) - Cells(i, 3)
+        Cells(i, period + 12 + periodFactor * (period - 2)) = _
+        Cells(i, period + 3 + (periodFactor - 3) * (period - 2)) - Cells(i, period + 1 + (periodFactor - 3) * (period - 2))
+        Cells(i, period + 12 + periodFactor * (period - 2)).NumberFormat = "#,##0"
+
+        'delta pp comparison in column O: Cells(i, 15) = Cells(i, 13) - Cells(i, 3) / Cells(14, 3)
+        Cells(i, period + 13 + periodFactor * (period - 2)) = _
+        Cells(i, period + 11 + periodFactor * (period - 2)) - Cells(i, period + 1 + (periodFactor - 3) * (period - 2)) _
+        / Cells(14, period + 1 + (periodFactor - 3) * (period - 2)) 'set 2nd c14 to $ (alias fix) through fixed row index
+        Cells(i, period + 13 + periodFactor * (period - 2)).NumberFormat = "0.0%"
+
     Next
 Next
 
 'P&L - porovnanie poloziek (generovanie a vypocet vzorcov)
 For i = 103 To 146
     If periodNumberPL < 2 Then
-    Exit For
+        Exit For
     End If
     
     For period = 2 To periodNumberPL
     
-    'y/y comparison, in column L: Cells(i, 12) = Cells(i, 5) / Cells(i, 3) - 1
-    If Cells(i, period + 1 + (periodFactor - 3) * (period - 2)).Value = 0 Then      'Cells (103,3)
-       Cells(i, period + 10 + periodFactor * (period - 2)) = "N/A"  'Cells (103,12)
-''''''
-       End If  'temporary
-       
-    'kontrola poctu mesiacov v Cells (2,13)
+        'y/y comparison, in column L: Cells(i, 12) = Cells(i, 5) / Cells(i, 3) - 1
+        If Cells(i, period + 1 + (periodFactor - 3) * (period - 2)).Value = 0 Then      'Cells (103,3)
+               Cells(i, period + 10 + periodFactor * (period - 2)) = "N/A"  'Cells (103,12)
+               ''''''
+           End If  'temporary
 
-'    ElseIf Cells(2, period + 11 + periodFactor * (period - 2)) = 12 Then
-'    'ak je pocet mesiacov 12
-'    'Cells(12, 12) = Cells(12, 5) / Cells(12, 3) - 1
-    Cells(i, period + 10 + periodFactor * (period - 2)) = _
-        Cells(i, period + 3 + (periodFactor - 3) * (period - 2)) / Cells(i, period + 1 + (periodFactor - 3) * (period - 2)) - 1
-'    Else
-'    'ak je pocet mesiacov iny ako 12
-'    'Cells(12, 12) = (Cells(12, 5)/Cells(2,13)*12 / Cells(12, 3) - 1
-'    Cells(i, period + 10 + periodFactor * (period - 2)) = _
-'        (Cells(i, period + 3 + (periodFactor - 3) * (period - 2)) / Cells(2, period + 11 + periodFactor * (period - 2)) * 12) _
-'        / Cells(i, period + 1 + (periodFactor - 3) * (period - 2)) - 1
-'    End If
-    
-    Cells(i, period + 10 + periodFactor * (period - 2)).NumberFormat = "0.0%"   'Cells(12, 12)
-    
-    'share comparison in column M: Cells(i, 13) = Cells(i, 5) / Cells(103, 5)
-    'set 2nd e103 to $ (alias fix) through fixed row index
-    Cells(i, period + 11 + periodFactor * (period - 2)) = _
-    Cells(i, period + 3 + (periodFactor - 3) * (period - 2)) / Cells(103, period + 3 + (periodFactor - 3) * (period - 2))
-    Cells(i, period + 11 + periodFactor * (period - 2)).NumberFormat = "0.0%"
-        '-------
+        'kontrola poctu mesiacov v Cells (2,13)
 
-    'delta comparison in column N: Cells(i, 14) = Cells(i, 5) - Cells(i, 3)
-''''''
-'    'kontrola poctu mesiacov v Cells (2,13)
-'    If Cells(2, period + 11 + periodFactor * (period - 2)) = 12 Then
-'    'ak je pocet mesiacov 12
-'    'Cells(i, 14) = Cells(i, 5) - Cells(i, 3)
-    Cells(i, period + 12 + periodFactor * (period - 2)) = _
-    Cells(i, period + 3 + (periodFactor - 3) * (period - 2)) - Cells(i, period + 1 + (periodFactor - 3) * (period - 2))
-'    Else
-'    'ak je pocet mesiacov iny ako 12
-'    'Cells(i, 14) = Cells(i, 5) - (Cells(i, 3)/12*Cells(2,13))
-'    Cells(i, period + 12 + periodFactor * (period - 2)) = _
-'    Cells(i, period + 3 + (periodFactor - 3) * (period - 2)) _
-'    - (Cells(i, period + 1 + (periodFactor - 3) * (period - 2)) / 12 * Cells(2, period + 11 + periodFactor * (period - 2)))
-'    End If
-    Cells(i, period + 12 + periodFactor * (period - 2)).NumberFormat = "#,##0"
-    
-    'delta pp comparison in column O: Cells(i, 15) = Cells(i, 13) - Cells(i, 3) / Cells(101, 3)
-    Cells(i, period + 13 + periodFactor * (period - 2)) = _
-    Cells(i, period + 11 + periodFactor * (period - 2)) - Cells(i, period + 1 + (periodFactor - 3) * (period - 2)) _
-    / Cells(103, period + 1 + (periodFactor - 3) * (period - 2)) 'set 2nd c103 to $ (alias fix) through fixed row index
-    Cells(i, period + 13 + periodFactor * (period - 2)).NumberFormat = "0.0%"
-    
+    '    ElseIf Cells(2, period + 11 + periodFactor * (period - 2)) = 12 Then
+    '    'ak je pocet mesiacov 12
+    '    'Cells(12, 12) = Cells(12, 5) / Cells(12, 3) - 1
+        Cells(i, period + 10 + periodFactor * (period - 2)) = _
+            Cells(i, period + 3 + (periodFactor - 3) * (period - 2)) / Cells(i, period + 1 + (periodFactor - 3) * (period - 2)) - 1
+    '    Else
+    '    'ak je pocet mesiacov iny ako 12
+    '    'Cells(12, 12) = (Cells(12, 5)/Cells(2,13)*12 / Cells(12, 3) - 1
+    '    Cells(i, period + 10 + periodFactor * (period - 2)) = _
+    '        (Cells(i, period + 3 + (periodFactor - 3) * (period - 2)) / Cells(2, period + 11 + periodFactor * (period - 2)) * 12) _
+    '        / Cells(i, period + 1 + (periodFactor - 3) * (period - 2)) - 1
+    '    End If
+
+        Cells(i, period + 10 + periodFactor * (period - 2)).NumberFormat = "0.0%"   'Cells(12, 12)
+
+        'share comparison in column M: Cells(i, 13) = Cells(i, 5) / Cells(103, 5)
+        'set 2nd e103 to $ (alias fix) through fixed row index
+        Cells(i, period + 11 + periodFactor * (period - 2)) = _
+        Cells(i, period + 3 + (periodFactor - 3) * (period - 2)) / Cells(103, period + 3 + (periodFactor - 3) * (period - 2))
+        Cells(i, period + 11 + periodFactor * (period - 2)).NumberFormat = "0.0%"
+            '-------
+
+        'delta comparison in column N: Cells(i, 14) = Cells(i, 5) - Cells(i, 3)
+    ''''''
+    '    'kontrola poctu mesiacov v Cells (2,13)
+    '    If Cells(2, period + 11 + periodFactor * (period - 2)) = 12 Then
+    '    'ak je pocet mesiacov 12
+    '    'Cells(i, 14) = Cells(i, 5) - Cells(i, 3)
+        Cells(i, period + 12 + periodFactor * (period - 2)) = _
+        Cells(i, period + 3 + (periodFactor - 3) * (period - 2)) - Cells(i, period + 1 + (periodFactor - 3) * (period - 2))
+    '    Else
+    '    'ak je pocet mesiacov iny ako 12
+    '    'Cells(i, 14) = Cells(i, 5) - (Cells(i, 3)/12*Cells(2,13))
+    '    Cells(i, period + 12 + periodFactor * (period - 2)) = _
+    '    Cells(i, period + 3 + (periodFactor - 3) * (period - 2)) _
+    '    - (Cells(i, period + 1 + (periodFactor - 3) * (period - 2)) / 12 * Cells(2, period + 11 + periodFactor * (period - 2)))
+    '    End If
+        Cells(i, period + 12 + periodFactor * (period - 2)).NumberFormat = "#,##0"
+
+        'delta pp comparison in column O: Cells(i, 15) = Cells(i, 13) - Cells(i, 3) / Cells(101, 3)
+        Cells(i, period + 13 + periodFactor * (period - 2)) = _
+        Cells(i, period + 11 + periodFactor * (period - 2)) - Cells(i, period + 1 + (periodFactor - 3) * (period - 2)) _
+        / Cells(103, period + 1 + (periodFactor - 3) * (period - 2)) 'set 2nd c103 to $ (alias fix) through fixed row index
+        Cells(i, period + 13 + periodFactor * (period - 2)).NumberFormat = "0.0%"
+
     Next
     
 Next
@@ -209,7 +209,7 @@ Next
 '-----------------------------------------------------------------------------------------------------------------------------
 
 'formatovanie
-ActiveWorkbook.Sheets("FA_Súvaha a VZaS").Activate
+ActiveWorkbook.Sheets("FA_SÃºvaha a VZaS").Activate
 'Cells.Select 'vyber celeho harku
 Range("A1:Z150").Select
 With Selection.Font
@@ -297,29 +297,29 @@ Selection.Interior.Color = 5296274
 'podmieneny format zony porovnania - Balance sheet
 For i = 14 To 100
     If periodNumber < 2 Then
-    Exit For
+        Exit For
     End If
     
     For period = 2 To periodNumber
     
-    'stlpec M: share on Balance sheet
-    If Cells(i, period + 11 + periodFactor * (period - 2)) >= 0.05 Then
-    Cells(i, period + 11 + periodFactor * (period - 2)).Font.Bold = True
-    Cells(i, period + 11 + periodFactor * (period - 2)).Interior.Color = 65535
-    ElseIf Cells(i, period + 11 + periodFactor * (period - 2)) >= 0.02 Then
-    Cells(i, period + 11 + periodFactor * (period - 2)).Interior.ThemeColor = xlThemeColorAccent2
-    Cells(i, period + 11 + periodFactor * (period - 2)).Interior.TintAndShade = 0.799981688894314
-    End If
-    'stlpec N: delta on previous Balance sheet
-    If Cells(i, period + 12 + periodFactor * (period - 2)) >= Cells(3, 13) Or _
-    Cells(i, period + 12 + periodFactor * (period - 2)) <= -Cells(3, 13) Then
-    Cells(i, period + 12 + periodFactor * (period - 2)).Font.Bold = True
-    Cells(i, period + 12 + periodFactor * (period - 2)).Interior.Color = 65535
-    ElseIf Cells(i, period + 12 + periodFactor * (period - 2)) >= Cells(4, 13) Or _
-    Cells(i, period + 12 + periodFactor * (period - 2)) <= -Cells(4, 13) Then
-    Cells(i, period + 12 + periodFactor * (period - 2)).Interior.ThemeColor = xlThemeColorAccent2
-    Cells(i, period + 12 + periodFactor * (period - 2)).Interior.TintAndShade = 0.799981688894314
-    End If
+        'stlpec M: share on Balance sheet
+        If Cells(i, period + 11 + periodFactor * (period - 2)) >= 0.05 Then
+            Cells(i, period + 11 + periodFactor * (period - 2)).Font.Bold = True
+            Cells(i, period + 11 + periodFactor * (period - 2)).Interior.Color = 65535
+        ElseIf Cells(i, period + 11 + periodFactor * (period - 2)) >= 0.02 Then
+            Cells(i, period + 11 + periodFactor * (period - 2)).Interior.ThemeColor = xlThemeColorAccent2
+            Cells(i, period + 11 + periodFactor * (period - 2)).Interior.TintAndShade = 0.799981688894314
+        End If
+        'stlpec N: delta on previous Balance sheet
+        If Cells(i, period + 12 + periodFactor * (period - 2)) >= Cells(3, 13) Or _
+            Cells(i, period + 12 + periodFactor * (period - 2)) <= -Cells(3, 13) Then
+            Cells(i, period + 12 + periodFactor * (period - 2)).Font.Bold = True
+            Cells(i, period + 12 + periodFactor * (period - 2)).Interior.Color = 65535
+        ElseIf Cells(i, period + 12 + periodFactor * (period - 2)) >= Cells(4, 13) Or _
+            Cells(i, period + 12 + periodFactor * (period - 2)) <= -Cells(4, 13) Then
+            Cells(i, period + 12 + periodFactor * (period - 2)).Interior.ThemeColor = xlThemeColorAccent2
+            Cells(i, period + 12 + periodFactor * (period - 2)).Interior.TintAndShade = 0.799981688894314
+        End If
     
     Next
 Next
@@ -327,29 +327,29 @@ Next
 'podmieneny format zony porovnania - P&L
 For i = 103 To 146
     If periodNumber < 2 Then
-    Exit For
+         Exit For
     End If
     
     For period = 2 To periodNumber
     
-    'stlpec M: share on Revenues
-    If Cells(i, period + 11 + periodFactor * (period - 2)) >= 0.05 Then
-    Cells(i, period + 11 + periodFactor * (period - 2)).Font.Bold = True
-    Cells(i, period + 11 + periodFactor * (period - 2)).Interior.Color = 65535
-    ElseIf Cells(i, period + 11 + periodFactor * (period - 2)) >= 0.02 Then
-    Cells(i, period + 11 + periodFactor * (period - 2)).Interior.ThemeColor = xlThemeColorAccent2
-    Cells(i, period + 11 + periodFactor * (period - 2)).Interior.TintAndShade = 0.799981688894314
-    End If
-    'stlpec N: delta on previous P&L
-    If Cells(i, period + 12 + periodFactor * (period - 2)) >= Cells(3, 15) Or _
-    Cells(i, period + 12 + periodFactor * (period - 2)) <= -Cells(3, 15) Then
-    Cells(i, period + 12 + periodFactor * (period - 2)).Font.Bold = True
-    Cells(i, period + 12 + periodFactor * (period - 2)).Interior.Color = 65535
-    ElseIf Cells(i, period + 12 + periodFactor * (period - 2)) >= Cells(4, 15) Or _
-    Cells(i, period + 12 + periodFactor * (period - 2)) <= -Cells(4, 15) Then
-    Cells(i, period + 12 + periodFactor * (period - 2)).Interior.ThemeColor = xlThemeColorAccent2
-    Cells(i, period + 12 + periodFactor * (period - 2)).Interior.TintAndShade = 0.799981688894314
-    End If
+        'stlpec M: share on Revenues
+        If Cells(i, period + 11 + periodFactor * (period - 2)) >= 0.05 Then
+            Cells(i, period + 11 + periodFactor * (period - 2)).Font.Bold = True
+            Cells(i, period + 11 + periodFactor * (period - 2)).Interior.Color = 65535
+        ElseIf Cells(i, period + 11 + periodFactor * (period - 2)) >= 0.02 Then
+            Cells(i, period + 11 + periodFactor * (period - 2)).Interior.ThemeColor = xlThemeColorAccent2
+            Cells(i, period + 11 + periodFactor * (period - 2)).Interior.TintAndShade = 0.799981688894314
+        End If
+        'stlpec N: delta on previous P&L
+        If Cells(i, period + 12 + periodFactor * (period - 2)) >= Cells(3, 15) Or _
+            Cells(i, period + 12 + periodFactor * (period - 2)) <= -Cells(3, 15) Then
+            Cells(i, period + 12 + periodFactor * (period - 2)).Font.Bold = True
+            Cells(i, period + 12 + periodFactor * (period - 2)).Interior.Color = 65535
+        ElseIf Cells(i, period + 12 + periodFactor * (period - 2)) >= Cells(4, 15) Or _
+            Cells(i, period + 12 + periodFactor * (period - 2)) <= -Cells(4, 15) Then
+            Cells(i, period + 12 + periodFactor * (period - 2)).Interior.ThemeColor = xlThemeColorAccent2
+            Cells(i, period + 12 + periodFactor * (period - 2)).Interior.TintAndShade = 0.799981688894314
+        End If
     
     Next
 Next
@@ -694,28 +694,4 @@ MsgBox ("FAU001 not found")
 End If
    
 End Sub
-
----
-
-
-Sub SaveCopyAsBackUp_BezMakier_Word()
-
-ActiveDocument.SaveCopyAs "L:\Docs\9 Back up\" & Left(ActiveDocument.Name, Len(ActiveDocument.Name) - 5) & " backup.docx"
-                                                                          
-MsgBox "Copy Saved as: " & Left(ActiveDocument.Name, _
-                           Len(ActiveDocument.Name) - 5) & " backup.docx" _
-                           & " in L:\Docs\9 Back up\"
-                                     
-End Sub
-
-'Sub SaveCopyAsBackUp_SMakrami()
-'
-'ActiveWorkbook.SaveCopyAs "L:\Docs\9 Back up\" & Left(ActiveWorkbook.Name, Len(ActiveWorkbook.Name) - 5) & " backup.xlsm"
-'
-'MsgBox "Copy Saved as: " & Left(ActiveWorkbook.Name, _
-'                                     Len(ActiveWorkbook.Name) - 5) & " backup.xlsm" _
-'                                     & " in L:\Docs\9 Back up\"
-'
-'End Sub
-
 
