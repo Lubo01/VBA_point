@@ -1,0 +1,266 @@
+
+Dim bunka As Range
+
+
+Sub cvicenie()
+'vyrobit 26 suborov A-Z
+'na kazdom 50 listov
+'na kazdom liste v bunke A1 bude text "tady sem byl"
+Dim newWB As Workbook
+Application.DisplayAlerts = False
+
+
+For i = 65 To 90
+'cislo 65 priradi z kodu ASCII pismeno A
+
+    Set newWB = Workbooks.Add
+    newWB.SaveAs "D:\Test\" & Chr(i) & ".xlsx"
+    'znak & spaja casti textu, teda priradi cestu k suboru a nazov suboru s priponou
+    
+        For j = 1 To 50
+        'alternativa j=50 To 1 Step -1
+        'ak nie je Step tak inkrementacia je vzdy +1
+        
+        
+            newWB.Worksheets.Add
+            ActiveSheet.Name = j
+        Next
+        
+        For Each prvok In newWB.Worksheets
+            If IsNumeric(prvok.Name) Then
+                prvok.Cells(1, 1).Value = "tady sem byl"
+                Else
+                    prvok.Delete
+                End If
+            Next
+            
+                
+            
+    newWB.Save
+    
+    newWB.Close
+Next
+
+Application.DisplayAlerts = True
+
+
+MsgBox "Hotovo, uz to mam!"
+
+
+End Sub
+
+
+Sub cvicenie2()
+
+Dim subor As Workbook
+cesta = Application.GetOpenFilename
+MsgBox cesta
+'cesta = InputBox("zadaj cestu")
+Set subor = Workbooks.Open(cesta)
+'Set subor = Workbooks.Open ("D:\Test\A.xlsx")
+subor.Worksheets("23").Cells(2, 1).Value = Date
+subor.Save
+subor.Close
+
+End Sub
+
+
+Sub cvicenie3()
+
+'praca s FSO
+
+Dim FSO As New FileSystemObject
+MsgBox FSO.Drives.Count
+MsgBox FSO.Drives("C:\").FreeSpace & "-" & FSO.Drives("C:\").DriveLetter
+
+Dim adresar As Folder
+Set adresar = FSO.CreateFolder("D:\pokus")
+MsgBox adresar.DateCreated
+
+End Sub
+
+Sub cvicenie4()
+
+'prebehnut vsetky subory v adresari
+
+Dim FSO As New FileSystemObject
+cesta = "D:\Test"
+Dim adresar As Folder
+Dim subor As File
+
+'Set bunka = ActiveCell
+Set bunka = Application.InputBox("vyber bunku", , , , , , , 8)
+'input box ma parametre, preto viac ciarok, posledny parameter type dame 8. typ - dialogbox s potvrdzovacim ok
+
+'Set adresar = FSO.GetFolder(cesta)
+Set adresar = FSO.GetFolder(cesta)
+
+For Each subor In adresar.Files
+    bunka.Value = subor.Path
+    bunka.Offset(0, 1).Value = subor.DateCreated
+    bunka.Offset(0, 2).Value = subor.Name
+    bunka.Offset(0, 3).Value = subor.Attributes()
+    bunka.Offset(0, 4).Value = subor.Size
+    
+    Set bunka = bunka.Offset(1, 0)
+    
+    'MsgBox subor.Path
+        
+Next
+
+    
+    
+End Sub
+
+
+Sub cvicenie5()
+'vytvori novy adresar a skopiruje do neho urcene subory
+
+Dim FSO As New FileSystemObject
+cesta = "D:\Test"
+cesta2 = "D:\Test2"
+
+If FSO.FolderExists(cesta2) Then
+    MsgBox "existuje adresar: " & cesta2
+    Set novyadresar = FSO.GetFolder(cesta2)
+    Exit Sub
+Else
+    Set novyadresar = FSO.CreateFolder(cesta2)
+    
+End If
+
+poc = 1
+Set oldadresar = FSO.GetFolder(cesta)
+For Each subor In oldadresar.Files
+    If poc Mod 2 = 0 Then
+    'Mod vrati zvysok delenia cisla, teda po deleni dvoma je zvysok 0 alebo 1
+    'Mod sa pouziva na urcenie kazdeho druheho alebo tretieho suboru, polozky atd.
+    
+        FSO.CopyFile subor.Path, novyadresar.Path & "\", True
+               
+    End If
+    poc = poc + 1
+Next
+
+
+End Sub
+
+Sub cvicenie6()
+
+'spracuje subory, ktore maju v stlpci F x
+'vsetko da (obsah skopiruje) na novy list pod seba
+
+Dim FSO As New FileSystemObject
+Dim bunka As Range
+Set bunka = ActiveCell
+
+Set KAM = Worksheets.Add
+'vytvori novy list
+urob = True
+
+Do While bunka.Value <> ""
+'prazdna bunka <>""
+
+cesta = bunka.Value
+pocR = KAM.UsedRange.Rows.Count
+If pocR = 1 And urob Then
+    pocR = 0
+    urob = False 'urobi to iba jeden krat
+End If
+
+'ak je za Then len jeden prikaz ide o skratenu formu t.j. nemusi byt End if
+
+    If FSO.FileExists(cesta) And bunka.Offset(0, 4).Value = "x" Then
+    'offset posuva o bunku dalej podla definicie v zatvorke
+        Set subor = FSO.GetFile(cesta)
+                        
+        Set openWB = Workbooks.Open(subor.Path)
+        MsgBox pocR
+        
+        openWB.Worksheets("1").UsedRange.Copy KAM.Cells(pocR + 1, 1)
+    
+        openWB.Close
+        End If
+        
+        Set bunka = bunka.Offset(1, 0)
+        'musi posuvat bunku o 1, inak mrzne pretoze pocita stale s tou istou bunkou
+                
+Loop
+
+    
+
+End Sub
+
+'nove cvicenie
+
+Dim bunka As Range
+'globalna premenna, zadefinovat bezne uplne hore
+
+
+Sub vypis_subor(cesta As String)
+'cesta k adresaru
+Dim FSO As New FileSystemObject
+Dim adresar As Folder
+Set adresar = FSO.GetFolder(cesta)
+
+For Each subor In adresar.Files
+    bunka.Value = subor.Path
+    Set bunka = bunka.Offset(1, 0)
+Next
+
+End Sub
+
+Sub vypis_adresar(ByVal cesta As String)
+'byVal sposob odovzdania parametru cez hodnotu, teda neodvolava sa v dalsej procedure naspat
+
+Dim FSO As New FileSystemObject
+Dim adresar As Folder
+Set adresar = FSO.GetFolder(cesta)
+
+For Each priecinok In adresar.SubFolders
+
+    bunka.Value = priecinok.Path
+    bunka.Interior.ColorIndex = 6
+    Set bunka = bunka.Offset(1, 0)
+    vypis_adresar priecinok.Path
+    'procedura (Sub) vola sama seba - je vnorena
+Next
+    vypis_subor adresar.Path
+    
+
+End Sub
+
+Sub vypis()
+cesta = "d:\test\"
+Set bunka = ActiveCell
+
+vypis_adresar cesta
+
+End Sub
+
+Sub rozsekaj()
+Set bunka = ActiveCell
+Do While bunka.Value <> ""
+    pole = Split(bunka.Value, "\")
+    'split rozdeluje textovy retazec podla parametra
+    'mozeme zadat parameter namiesto lomitka ako InputBox a zadavat parameter delenia podla zadania v dialogovm okne
+    
+    For i = LBound(pole) To UBound(pole)
+    'lbound=spodna hranica, Ubound =horna hranica pola
+        bunka.Offset(0, i + 1).Value = pole(i)
+        bunka.Offset(0, i + 1).Interior.ColorIndex = bunka.Interior.ColorIndex
+               
+    Next
+    Set bunka = bunka.Offset(1, 0)
+    
+Loop
+End Sub
+
+Sub daj_na_koniec()
+
+Dim tabulka As Range
+'netreba makro da sa to urobit vzorcom cez referencie (index, indirect adres....)
+
+
+End Sub
+
