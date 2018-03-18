@@ -1,6 +1,6 @@
 'Content:
 
-'1 CrsInterfaceDraft2a   11
+'1 CrsInterface_v2a   11
 '2 XSplitLabelShort 407
 '3 XHideZeroRows 418
 '4 XHideZeroRowsVstupy 432
@@ -8,7 +8,7 @@
 '6 CRIS_RatiosFlags 474
 '7 CRIS_RatiosFlags2 576
 
-Sub CrsInterfaceDraft2a()
+Sub CrsInterface_v2a()
 
 Application.ScreenUpdating = False
 Application.Calculation = xlCalculationManual
