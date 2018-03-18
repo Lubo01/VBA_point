@@ -1,2 +1,22 @@
 
- 
+ Sub SaveCopyAsBackUp_BezMakier_Word()
+
+ActiveDocument.SaveCopyAs "L:\Docs\9 Back up\" & Left(ActiveDocument.Name, Len(ActiveDocument.Name) - 5) & " backup.docx"
+                                                                          
+MsgBox "Copy Saved as: " & Left(ActiveDocument.Name, _
+                           Len(ActiveDocument.Name) - 5) & " backup.docx" _
+                           & " in L:\Docs\9 Back up\"
+                                     
+End Sub
+
+'Sub SaveCopyAsBackUp_SMakrami()
+'
+'ActiveWorkbook.SaveCopyAs "L:\Docs\9 Back up\" & Left(ActiveWorkbook.Name, Len(ActiveWorkbook.Name) - 5) & " backup.xlsm"
+'
+'MsgBox "Copy Saved as: " & Left(ActiveWorkbook.Name, _
+'                                     Len(ActiveWorkbook.Name) - 5) & " backup.xlsm" _
+'                                     & " in L:\Docs\9 Back up\"
+'
+'End Sub
+
+
