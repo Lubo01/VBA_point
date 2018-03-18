@@ -1,0 +1,98 @@
+
+Private Sub cmdNapln_Click()
+x = Split("¾,š,è,,ž,ý,á,í,é", ",")
+ListBox1.List = x
+MsgBox ListBox1.ListCount
+
+
+End Sub
+
+Private Sub cmdPresun_Click()
+If ListBox2.ListIndex = -1 Then Exit Sub
+
+If Not CheckBox1.Value Then
+    'ak nie je zaskrtnute, tak kontrolujem duplicitu
+    najdene = False
+
+    For i = 0 To ListBox3.ListCount - 1
+         If ListBox3.List(i) = ListBox2.Value Then
+         Beep
+         najdene = True
+    
+         Exit For
+    
+         End If
+    Next
+End If
+
+    If Not najdene Then ListBox3.AddItem ListBox2.Value
+    
+    
+'Else
+'ListBox3.AddItem ListBox2.Value
+'pouzit ak nie je checkbox duplicity
+
+
+
+
+End Sub
+
+Private Sub cmdurob_Click()
+
+    napisane = txtMeno.Text
+    If Len(napisane) = 0 Then
+        MsgBox "nieco zadaj"
+        Exit Sub
+    End If
+    
+    lblpopis1.Caption = napisane
+    cmdurob.Caption = "urobene"
+    cmdurob.Enabled = False
+    
+End Sub
+
+Private Sub cmdVysledok_Click()
+MsgBox ListBox1.ListIndex
+MsgBox ListBox1.Value
+'pouzitie list index a value pri vybere jednej polozky
+
+'For i = 0 To ListBox1.ListCount - 1
+'    If ListBox1.Selected(i) Then
+'        MsgBox ListBox1.List(i)
+'    End If
+'
+'Next
+'pouzitie for pri multiselekcii, vlastnost multiselect
+
+
+
+End Sub
+
+Private Sub ListBox2_Click()
+
+End Sub
+
+Private Sub optDni_Click()
+ListBox1.RowSource = "Hárok2!dni"
+End Sub
+
+Private Sub optJedla_Click()
+ListBox1.RowSource = "Hárok2!jedla"
+End Sub
+
+Private Sub optMesiace_Click()
+ListBox1.RowSource = "Hárok2!mesiace"
+End Sub
+
+Private Sub UserForm_Activate()
+For Each prvok In Worksheets
+    ListBox2.AddItem prvok.Name
+Next
+
+End Sub
+
+Private Sub userform_click()
+MsgBox "klikol si"
+
+
+End Sub
