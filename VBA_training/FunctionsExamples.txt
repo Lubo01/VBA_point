@@ -1,0 +1,152 @@
+Function PRVA()
+
+PRVA = ActiveWorkbook.Sheets.Count
+
+End Function
+
+Function DRUHA(vstup)
+
+x = vstup
+
+If IsNumeric(x) Then
+x = x + 10
+Else
+x = 0
+End If
+
+DRUHA = x
+
+End Function
+
+Function ROMAN2(cislo As Integer) As String
+x = Application.WorksheetFunction.Roman(cislo)
+x = LCase(x) & "."
+ROMAN2 = x
+End Function
+
+Function NAOPAK(vstup As String) As String
+'textovy retazec konvertuje citanim odzadu
+dlzka = Len(vstup)
+For i = dlzka To 1 Step -1
+    vystup = vystup & Mid(vstup, i, 1)
+Next
+NAOPAK = vystup
+End Function
+
+Function BEZSTREDNEHOMENA(vstup As String) As String
+'definuje sa vzdy format vstupu a vystupu - String, inak bude Variant - vseobecny
+x = Trim(vstup)
+meno = Left(x, InStr(1, x, " ", vbTextCompare) - 1)
+priezvisko = Right(x, Len(x) - (InStrRev(x, " ", , vbTextCompare)))
+
+BEZSTREDNEHOMENA = meno & " " & priezvisko
+
+End Function
+
+Sub pomocka()
+'velmi vhodne na ladenie funkcii, t.j. check spravnost a hladanie chyb
+
+x = BEZSTREDNEHOMENA("aaa bbbb cccc")
+End Sub
+
+Function ISPALINDROM(vstup As String, Optional medzera) As Boolean
+'palindrom je slovo ktore ma vyznam aj odzadu
+'optional je volitelny parameter, vzdy zacat povinnymi parametrami
+'medzera ma hodnoty 1, alebo hocico ine
+'1-neber medzery do uvahy (odstranit)
+'ina hodnota - pocitaju sa aj medzery
+
+If IsMissing(medzera) Then medzera = 0
+If medzera = 1 Then
+vstup = Replace(vstup, " ", "", 1)
+End If
+
+vystup = False
+'vhodne zadat vzdy hned defaultnu navratovu hodnotu aj ked nevyjde funkcia
+If vstup = NAOPAK(vstup) Then vystup = True
+ISPALINDROM = vystup
+    
+End Function
+
+Function ZRETAZIT(oblast As Range) As String
+For Each prvok In oblast.Cells
+    x = x & prvok.Value
+Next
+ZRETAZIT = x
+  
+End Function
+
+Function KENO()
+Application.Volatile True
+'funkcia sa bude stale prepocitavat, tj meni hodnoty a aktualizuje sa obsah ak je text
+'standardne je nastaveny volatile ako false
+
+KENO = Int(Rnd() * 100)
+'Int ako Integer vrati cele cislo
+
+
+End Function
+
+Sub vlastnosti_makra()
+
+Application.MacroOptions "ZRETAZIT", popis, , , , , 7
+
+End Sub
+
+Function DIAKRITIKA(vstup As String) As String
+
+pole_znakov = Split("¾,š,è,,ž,ý,á,í,é,ú,ä,ò,ô,å,ó", ",")
+pole_nahrad = Split("l,s,c,t,z,y,a,i,e,u,a,n,o,l,o", ",")
+
+For i = LBound(pole_znakov) To UBound(pole_znakov)
+    vstup = Replace(vstup, pole_znakov(i), pole_nahrad(i))
+    'nahradza male pismena
+    vstup = Replace(vstup, UCase(pole_znakov(i)), UCase(pole_nahrad(i)))
+    'nahradza velke pismena
+    
+Next
+
+DIAKRITIKA = vstup
+'kazda funkcia musi mat na konci vystup
+
+End Function
+
+Sub ladenie()
+MsgBox DIAKRITIKA("¾ššèè")
+End Sub
+
+Function AKOSUMA(operator As String, ParamArray zoznam())
+
+
+'zatvorky udavaju ze zoznam je pole znakov
+
+For Each prvok In zoznam
+    For Each dalsi In prvok
+        If IsNumeric(dalsi) Then
+        Select Case operator
+            Case "plus"
+                x = x + dalsi
+            Case "minus"
+                x = x - dalsi
+            Case "krat"
+                x = x * dalsi
+            Case "delenie"
+                If dalsi <> 0 Then x = x / dalsi
+        End Select
+            'defaultne je nastavene x na 0, kedze nebolo definovane, tj nepocita dobre krat a delenie a minus zacina od prvej nuly
+            
+        End If
+    Next
+Next
+
+AKOSUMA = x
+
+End Function
+
+
+Sub zobraz()
+
+UserForm1.Show
+
+
+End Sub
